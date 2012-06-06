@@ -11,11 +11,14 @@ def generate_from_file(file_path):
     root = et.fromstring(xml_str )
     channel = root.find('channel')
     site_url = channel.find('link').text
+    pmap = {}
     for item in channel.iterfind('item'):
         if item.find(xml_wp_ns + 'status').text.lower() == 'publish':
-            create_url(item, site_url)
+            create_url(item, site_url, pmap)
 
-def create_url(xml_item, site_url):
+    generate_pid_map(pmap)
+
+def create_url(xml_item, site_url, pmap):
     title = xml_item.find('title').text
     title = unicode(title)
     old_link = xml_item.find('link').text
@@ -25,11 +28,20 @@ def create_url(xml_item, site_url):
 
     wp_id = xml_item.find(xml_wp_ns + 'post_id').text
 
-    new_link = "/blog/%s/%s/%s/%s/" % (post_date.year, post_date.month, post_date.day, 
+    new_link = "/blog/%s/%02d/%02d/%s/" % (post_date.year, post_date.month, post_date.day, 
             slugify.slugify(title))
-
-    print('rewrite ^{}$ {} permanent;'.format('/?p=' + wp_id, new_link))
+    
+    pmap[wp_id] = new_link
+    #print('rewrite ^{}$ {} permanent;'.format('/?p=' + wp_id, new_link))
     print('rewrite ^{}$ {} permanent;'.format(old_link, new_link))
+
+def generate_pid_map(pmap):
+    #print('if ($args ~* p=\d+) {')
+    for pid, new_link in pmap.iteritems():
+        print('if ($args = p=%s) {' % pid)
+        print('  return 301 %s; }' % new_link)
+
+    #print('}')
 
 if __name__ == '__main__':
     if not sys.argv > 1:
