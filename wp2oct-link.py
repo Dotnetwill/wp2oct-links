@@ -32,17 +32,12 @@ def create_url(xml_item, site_url, pmap):
             slugify.slugify(title))
     
     pmap[wp_id] = new_link
-    #print('rewrite ^{}$ {} permanent;'.format('/?p=' + wp_id, new_link))
     print('rewrite ^{}$ {} permanent;'.format(old_link, new_link))
 
 def generate_pid_map(pmap):
-    #print('if ($args ~* p=\d+) {')
     for pid, new_link in pmap.iteritems():
         print('if ($args = p=%s) {' % pid)
         print('  return 301 %s; }' % new_link)
-
-    #print('}')
-
 if __name__ == '__main__':
     if not sys.argv > 1:
         print('Usage: python wp2oct-linl.py exported_wordpress.xml')
