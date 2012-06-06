@@ -9,6 +9,7 @@ It outputs the rules to stdout so you can copy/paste or whatever into the releva
 
 ##Installation##
 This app requires lxml and slugify.  You can install them manually or do:
+
     pip install -r requirements.txt
 
 ##Feedback##
