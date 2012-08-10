@@ -4,6 +4,8 @@ A small python script that to inspect an exported wordpress XML file and generat
 
 It outputs the rules to stdout so you can copy/paste or whatever into the relevant nginx conf.
 
+It will generate two rules for each post, one for the link specified in the wordpress xml and one for the p=id that is the default wordpress style
+
 ##Usage##
     python wp2oct-link.py /path/to/workpress-export.xml
 
